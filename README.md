@@ -10,6 +10,8 @@ The communication is based on a TCP handshake mechanism using [torch-ipc](https:
 
 
 
+![alt tag](https://cloud.githubusercontent.com/assets/8818883/14954444/23b4e98e-107b-11e6-8407-a93647f3c2d0.png)
+
 
 Server Node
 ------------
