@@ -1,8 +1,8 @@
-package = "AsyncEASGD"
+package = "Async-EASGD"
 version = "scm-1"
 
 source = {
-   url = "git://github.com/shanlior/AsyncEASGD.git",
+   url = "git://github.com/shanlior/Async-EASGD.git",
 }
 
 description = {
