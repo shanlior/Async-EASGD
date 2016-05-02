@@ -1,5 +1,5 @@
 local opt = lapp [[
-Train a CNN classifier on CIFAR-10 using AllReduceSGD.
+Train a CNN classifier on CIFAR-10 using Asynchronous.
 
    --numNodes          (default 1)         num nodes spawned in parallel
    --batchSize         (default 32)        batch size, per node

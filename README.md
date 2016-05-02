@@ -60,20 +60,24 @@ Executing the example is done by running **./AsyncEASGD.sh [port]**
 
 Note that in order to use several machines, this package and all of its dependencies must be installed on each machine.
 
-In order to run a script from a remote machine, use this syntax on the machine that holds the server node:
+In order to run a client node on a remote machine, use this syntax on the machine that holds the server node:
 
 ```
 ssh -n -f [user]@[host] "sh -c 'cd [script dir] ; nohup /home/lior/torch/install/bin/th client.lua [params] > /dev/null 2>&1 &'"
 ```
 
-Where **[params]** contains for example:
+or more specific example, using this client node as a third node:
+```
+ssh -n -f [user]@[host] "sh -c 'cd [Async-EASGD examples dir] ; nohup /home/lior/torch/install/bin/th client.lua --cuda --gpu 1 --numNodes $numNodes --nodeIndex 3 --batchSize 128 --port $port --host $serverip > /dev/null 2>&1 &'"
+```
 
+
+In order to run a script on a remote machine, use this syntax on the machine that holds the server node:
 
 ```
--- /home/lior/torch/install/bin/th client.lua [params] equals to:
-th client.lua --cuda --gpu 1 --numNodes $numNodes --nodeIndex 3 --batchSize 128 --port $port --host $serverip &
-
+ssh -n -f [user]@[host] "sh -c 'cd [scriptDir] ; nohup ./[script] > /dev/null 2>&1 &'"
 ```
+
 
 
 
