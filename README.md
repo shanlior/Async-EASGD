@@ -52,7 +52,9 @@ An implementation of the tester node can be found [here](examples/tester.lua).
 Example
 --------
 
-A working example can be found [here](examples/AsyncEASGD.sh)
+A working example can be found [here](examples/AsyncEASGD.sh).
+
+The example is a classification task on the [Cifar-10](https://www.cs.toronto.edu/~kriz/cifar.html) dataset. The dataset is loaded using [torch-dataset](https://github.com/twitter/torch-dataset) repository.
 
 Executing the example is done by running **./AsyncEASGD.sh [port]**
 
