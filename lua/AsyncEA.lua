@@ -225,7 +225,7 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
 
   local function testNet()
 
-    local function serverHandler(client)
+    local function testServerHandler(client)
 
       client:send("Test?")
       local msg = client:recv()
@@ -240,7 +240,7 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
 
     end
 
-    serverTest:clients(1, serverHandler)
+    serverTest:clients(1, testServerHandler)
 
   end
 
