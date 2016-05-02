@@ -50,7 +50,7 @@ local clientTest, serverTest
 clientBroadcast = ipc.client(opt.host, opt.port)
 client = ipc.client(opt.host, opt.port + opt.nodeIndex)
 
-local AsyncEA = require 'distlearn.AsyncEA'(server, serverBroadcast, client, clientBroadcast, serverTest, clientTest, opt.numNodes, opt.nodeIndex,tau, 0.2)
+local AsyncEA = require 'Async-EASGD.AsyncEA'(server, serverBroadcast, client, clientBroadcast, serverTest, clientTest, opt.numNodes, opt.nodeIndex,tau, 0.2)
 
 -- Print only in instance server and tester if not on verbose mode!
 if not opt.verbose then

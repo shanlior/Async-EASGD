@@ -61,7 +61,7 @@ for i=1,opt.numNodes do
 end
 
 
-local AsyncEA = require 'distlearn.AsyncEA'(server, serverBroadcast, client, clientBroadcast,serverTest,clientTest,opt.numNodes, 1,10, 0.2)
+local AsyncEA = require 'Async-EASGD.AsyncEA'(server, serverBroadcast, client, clientBroadcast,serverTest,clientTest,opt.numNodes, 1,10, 0.2)
 
 -- Print only in server and tester nodes!
 if not (opt.tester or opt.server) then

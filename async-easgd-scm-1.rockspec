@@ -21,7 +21,7 @@ dependencies = {
 build = {
    type = "builtin",
    modules = {
-      ['AsyncEASGD.AsyncEA'] = 'lua/AsyncEA.lua',
+      ['Async-EASGD.AsyncEA'] = 'lua/AsyncEA.lua',
       ['colorPrint'] = 'lua/colorPrint.lua'
    },
 }
