@@ -63,14 +63,15 @@ Note that in order to use several machines, this package and all of its dependen
 In order to run a script from a remote machine, use this syntax on the machine that holds the server node:
 
 ```
-ssh -n -f [user]@[host] "sh -c 'cd [script dir] ; nohup ./[script] $port > /dev/null 2>&1 &'"
+ssh -n -f [user]@[host] "sh -c 'cd [script dir] ; nohup /home/lior/torch/install/bin/th client.lua [params] > /dev/null 2>&1 &'"
 ```
 
-Inside **[script]** write the same run code:
+Where **[params]** are the parameters found here:
 
 For example:
 
 ```
+-- /home/lior/torch/install/bin/th client.lua [params] equals to:
 th client.lua --cuda --gpu 1 --numNodes $numNodes --nodeIndex 3 --batchSize 128 --port $port --host $serverip &
 
 ```
