@@ -14,7 +14,7 @@ Train a CNN classifier on CIFAR-10 using Asynchronous.
    --tester                                 Tester
    --verbose                                Print Communication details
    --save              (default 'log') Save location
-   --visualise         (default 1)
+   --visualize                              Visualization
 
 ]]
 
@@ -155,7 +155,7 @@ for syncID = 1,opt.numEpochs*opt.batchSize do
   confusionMatrix:zero()
 
   Log:add{['Training Error']= ErrTrain, ['Test Error'] = ErrTest}
-  if opt.visualize == 1 then
+  if opt.visualize then
       Log:style{['Training Error'] = '-', ['Test Error'] = '-'}
       Log:plot()
   end
