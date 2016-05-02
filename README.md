@@ -66,7 +66,7 @@ In order to run a script from a remote machine, use this syntax on the machine t
 ssh -n -f [user]@[host] "sh -c 'cd [script dir] ; nohup /home/lior/torch/install/bin/th client.lua [params] > /dev/null 2>&1 &'"
 ```
 
-Where **[params]** are the for example:
+Where **[params]** contains for example:
 
 
 ```
