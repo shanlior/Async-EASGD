@@ -19,8 +19,8 @@ Install
 
 **Dependencies:**
 
-[torch-dataset](https://github.com/twitter/torch-dataset)
-[torch-ipc](https://github.com/twitter/torch-ipc)
+1. [torch-dataset](https://github.com/twitter/torch-dataset)
+2. [torch-ipc](https://github.com/twitter/torch-ipc)
 
 Open a terminal and choose the wanted directory:
 ```
