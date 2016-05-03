@@ -1,7 +1,7 @@
 Async-EASGD
 =========
 
-This Framework currently hold an implementation of [Asynchronous Elasting Averaging SGD](http://arxiv.org/abs/1412.6651)
+This Framework currently holds an implementation of [Asynchronous Elasting Averaging SGD](http://arxiv.org/abs/1412.6651)
 
 This implementation can be modified as a framework for implementing other asynchronous distributed
 algorithms for Deep Learning. This framework support heterogeneous devices.
