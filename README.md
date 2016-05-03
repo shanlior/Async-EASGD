@@ -13,6 +13,26 @@ The communication is based on a TCP handshake mechanism using [torch-ipc](https:
 ![alt tag](https://cloud.githubusercontent.com/assets/8818883/14954444/23b4e98e-107b-11e6-8407-a93647f3c2d0.png)
 
 
+Install
+--------
+
+
+**Dependencies:**
+
+[torch-dataset](https://github.com/twitter/torch-dataset)
+[torch-ipc](https://github.com/twitter/torch-ipc)
+
+Open a terminal and choose the wanted directory:
+```
+git clone https://github.com/shanlior/Async-EASGD
+luarocks make
+```
+
+Or directly:
+```
+luarocks install https://raw.githubusercontent.com/shanlior/Async-EASGD/master/async-easgd-scm-1.rockspec
+```
+
 Server Node
 ------------
 
@@ -32,7 +52,7 @@ Client Node
 
 The client nodes are used for training the net.
 
-Every determined number of iterations, the client node contacts the server in order to do the elastic averaging step - 
+Every determined number of iterations, the client node contacts the server in order to do the elastic averaging step -
 and update the center node.
 
 An implementation of the client node can be found [here](examples/client.lua).
@@ -89,5 +109,3 @@ License
 
 Licensed under the Apache License, Version 2.0.
 [See LICENSE file](LICENSE).
-
-
