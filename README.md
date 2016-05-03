@@ -1,10 +1,10 @@
 Async-EASGD
 =========
 
-An implementation of [Asynchronous Elasting Averaging SGD](http://arxiv.org/abs/1412.6651)
+This Framework currently hold an implementation of [Asynchronous Elasting Averaging SGD](http://arxiv.org/abs/1412.6651)
 
 This implementation can be modified as a framework for implementing other asynchronous distributed
-algorithms for Deep Learning.
+algorithms for Deep Learning. This framework support heterogeneous devices.
 
 The communication is based on a TCP handshake mechanism using [torch-ipc](https://github.com/twitter/torch-ipc) messages.
 
