@@ -134,6 +134,6 @@ AsyncEA.signalFinish()
 
 serverBroadcast:close()
 serverTest:close()
-for i=1,opt.numNodes
+for i=1,opt.numNodes do
   server[i]:close()
 end
