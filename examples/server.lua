@@ -93,20 +93,47 @@ AsyncEA.initServer(params)
 
 local epoch = 1
 
--- print('Training #' .. epoch)
+
+print('Training #' .. epoch .. '\n')
+
 -- Train a neural network
 if opt.numEpochs == 'inf' then
   opt.numEpochs = 1/0
 end
 
-for syncID = 1,opt.numEpochs*opt.batchSize do
+local numSyncs = opt.numEpochs*opt.testTime
+
+for syncID = 1,numSyncs do
 
   AsyncEA.syncServer(params)
 
-  xlua.progress(syncID % opt.testTime, opt.testTime)
+  if syncID % opt.testTime == 0 then
+    xlua.progress(opt.testTime, opt.testTime)
+  else
+    xlua.progress(syncID % opt.testTime, opt.testTime)
+  end
+
 
   if syncID % opt.testTime == 0 then -- every 100 syncs test the net
     AsyncEA.testNet()
+    epoch = epoch + 1
+    if not syncID == numSyncs then
+      print('Training #' .. epoch .. '\n')
+    end
   end
 
+end
+
+print('Training is finished!\n')
+print('Testing Net for final Results:')
+-- Tests Final Net
+AsyncEA.testNet()
+
+-- Terminated connection
+AsyncEA.signalFinish()
+
+serverBroadcast:close()
+serverTest:close()
+for i=1,opt.numNodes
+  server[i]:close()
 end

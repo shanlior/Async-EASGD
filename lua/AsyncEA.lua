@@ -9,21 +9,21 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
   local step = 0
 
   -- Keep track of the center point (also need space for the delta)
-  local center,delta,flatParam
+  local center,delta
 
   local currentClient
   local busyFlag = 0
+
+  local terminationFlag = false
 
   -- Clone the parameters to use a center point
   local function oneTimeInit(params)
     if not center then
       center = { }
       delta = { }
-      flatParam = { }
       walkTable(params, function(param)
         table.insert(center, param:clone())
         table.insert(delta, param:clone())
-        table.insert(flatParam, param)
       end)
     end
   end
@@ -31,7 +31,7 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
 
 
 
-  -- Helper Functions
+  ------------ Helper Functions -----------
 
   local function isSyncNeeded()
 
@@ -69,13 +69,21 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
   local function clientEnterSync()
     -- A mutex like block that lets only one client sync enter the syncing
     -- process with the server
+    -- returns: true if succeeded
+    --          false for termination signal
+
 
     printClient(node,"Waiting to sync")
     clientBroadcast:send({ q = "Enter?",
     clientID = node})
-    assert(client:recv() == "Enter")
-    printClient(node,"Entered Sync")
-
+    local msg = client:recv()
+    if msg == "Enter" then
+      printClient(node,"Entered Sync")
+      return true
+    elseif msg == "Terminate" then
+      printClient(node,"Terminated")
+      return false
+    end
   end
 
 
@@ -121,14 +129,19 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
   local function syncClient(params)
     -- implements Async EA-SGD on client's end
     if isSyncNeeded() then
-      clientEnterSync() -- Start communication if needed with server, stand in line
-      clientGetCenter(params) -- Receive required parameters from the server
-      calculateUpdateDiff(params) -- Do calculations locally
-      clientSendDiff(params) -- Send updated values to the server
-      return true -- if synced
+      if clientEnterSync() then -- Start communication if needed with server, stand in line
+        clientGetCenter(params) -- Receive required parameters from the server
+        calculateUpdateDiff(params) -- Do calculations locally
+        clientSendDiff(params) -- Send updated values to the server
+        return 0 -- if synced
+      else
+        print('synClient terminated')
+        client:send("Terminated")
+        return 2 -- if terminated
+      end
     end
 
-    return false
+    return 1 -- if not synced
 
   end
 ----------- Server Functions ------------
@@ -225,7 +238,10 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
 
   local function testNet()
 
+    -- Send center node to tester
+
     local function testServerHandler(client)
+
 
       client:send("Test?")
       local msg = client:recv()
@@ -244,6 +260,45 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
 
   end
 
+  local function signalFinish()
+    -- Signal Tester and Workers to finish
+
+
+    -- Stops Tester
+    local function serverTestHandler(client)
+
+      client:send("Terminate")
+      printServer("Server Sent termination signal Tester")
+      assert(client:recv() == "Terminated")
+    end
+
+    serverTest:clients(1, serverTestHandler)
+
+    -- Stops Clients
+
+    for i=1,numNodes do
+
+
+      msg = serverBroadcast:recvAny()
+      assert(msg.q == "Enter?")
+      currentClient = msg.clientID
+
+      printServer("Current client is #" .. currentClient)
+
+      local function serverHandler(client)
+        client:send("Terminate")
+        printServer("Server Sent termination signal to Client #" .. currentClient)
+        assert(client:recv() == "Terminated")
+      end
+
+      server[currentClient]:clients(1, serverHandler)
+
+    end
+
+  end
+
+
+
   ----------- Tester Functions ------------
   local function initTester(params)
   -- initialize tester parameters
@@ -256,25 +311,35 @@ local function AsyncEA(server, serverBroadcast, client, clientBroadcast, serverT
     -- Ask server for the center variable and receive it
 
     local msg = clientTest:recv()
-    assert(msg == "Test?")
 
-    clientTest:send("Center?")
+    if msg == "Test?" then
 
-    walkTable(center, function(valuei)
-      return clientTest:recv(valuei)
-    end)
-    local i = 1
-    walkTable(params, function(param)
-      param:copy(center[i])
-      i = i + 1
-    end)
+      clientTest:send("Center?")
+
+      walkTable(center, function(valuei)
+        return clientTest:recv(valuei)
+      end)
+      local i = 1
+      walkTable(params, function(param)
+        param:copy(center[i])
+        i = i + 1
+      end)
+
+    elseif msg == "Terminate" then
+
+      terminationFlag = true -- Terminate
+      clientTest:send("Terminated")
+
+    end
+
+    return terminationFlag
 
   end
 
   local function finishTest()
     -- Ask server for the center variable and receive it
 
-    clientTest:send("Ack")
+      clientTest:send("Ack")
 
   end
 
@@ -286,7 +351,8 @@ return {
   syncServer = syncServer,
   testNet = testNet,
   startTest = startTest,
-  finishTest = finishTest
+  finishTest = finishTest,
+  signalFinish = signalFinish
 }
 end
 

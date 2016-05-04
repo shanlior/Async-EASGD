@@ -91,15 +91,20 @@ AsyncEA.initTester(params)
 
 local epoch = 1
 
-print('Training #' .. epoch)
 -- Train a neural network
 if opt.numEpochs == 'inf' then
   opt.numEpochs = 1/0
 end
 
-for syncID = 1,opt.numEpochs*opt.batchSize do
+while true do
 
-  AsyncEA.startTest(params)
+  local terminationFlag
+
+  terminationFlag = AsyncEA.startTest(params)
+  if terminationFlag then
+    break
+  end
+
 
   -- Check Training Error
   print('\nTraining Error Trial #'..epoch .. '\n')
@@ -155,6 +160,9 @@ for syncID = 1,opt.numEpochs*opt.batchSize do
   confusionMatrix:zero()
 
   Log:add{['Training Error']= ErrTrain, ['Test Error'] = ErrTest}
+
+  torch.save(opt.save .. '/net.t7',params)
+
   if opt.visualize then
       Log:style{['Training Error'] = '-', ['Test Error'] = '-'}
       Log:plot()
@@ -162,8 +170,12 @@ for syncID = 1,opt.numEpochs*opt.batchSize do
 
   epoch = epoch + 1
 
-  AsyncEA.finishTest(params)
 
-  print('Training #' .. epoch .. '\n')
+  AsyncEA.finishTest()
+
 
 end
+
+-- Close Connection
+
+clientTest:close()

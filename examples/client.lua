@@ -82,8 +82,8 @@ params = grad.util.cast(params, opt.cuda and 'cuda' or 'float')
 -- Train a neural network
 AsyncEA.initClient(params)
 
-for epoch = 1,100 do
-
+while true do
+  local terminationFlag
    for i = 1,numTrainingBatches() do
       -- Next sample:
       local batch = getTrainingBatch()
@@ -94,8 +94,13 @@ for epoch = 1,100 do
       local grads, loss, prediction = df(params,x,y)
 
       -- sync with Master
-      AsyncEA.syncClient(params) -- Syncs client with server if needed
 
+      terminationFlag = AsyncEA.syncClient(params) -- Syncs client with server if needed
+
+      if terminationFlag == 2 then
+        -- Client has finished
+        break
+      end
 
       -- Update weights and biases
       for layer in pairs(params) do
@@ -103,7 +108,20 @@ for epoch = 1,100 do
             params[layer][i]:add(-opt.learningRate, grads[layer][i])
          end
       end
+   end
 
+
+   if terminationFlag == 2 then
+     -- Client has finished
+     printClient(opt.nodeIndex,'Ended')
+     break
    end
 
 end
+
+
+-- Close Connection
+
+
+client:close()
+clientBroadcast:close()
